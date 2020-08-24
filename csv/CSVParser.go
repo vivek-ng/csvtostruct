@@ -47,20 +47,24 @@ func (c *CSVStruct) ScanStruct(csvRow []string, inputStruct interface{}) error {
 	if s.Kind() != reflect.Struct {
 		return errors.New("input should be a pointer to a struct")
 	}
-	//fmt.Println(s.String())
 	for i := 0; i < s.NumField(); i++ {
 		f := s.Field(i)
+		csvTag := reflect.TypeOf(inputStruct).Elem().Field(i).Tag.Get("csv")
+		idx := index(csvTag, c.headers)
+		if idx == -1 {
+			continue
+		}
 		switch f.Type().Kind() {
 		case reflect.String:
-			f.SetString(csvRow[i])
+			f.SetString(csvRow[idx])
 		case reflect.Int:
-			ival, err := strconv.ParseInt(csvRow[i], 10, 0)
+			ival, err := strconv.ParseInt(csvRow[idx], 10, 0)
 			if err != nil {
 				return err
 			}
 			f.SetInt(ival)
 		case reflect.Bool:
-			ival, err := strconv.ParseBool(csvRow[i])
+			ival, err := strconv.ParseBool(csvRow[idx])
 			if err != nil {
 				return err
 			}
@@ -71,12 +75,6 @@ func (c *CSVStruct) ScanStruct(csvRow []string, inputStruct interface{}) error {
 
 }
 
-// func main() {
-// 	test := []string{"Vivek", "45"}
-// 	p := Person{}
-// 	ScanStruct(test, &p)
-// }
-
 func isPresent(val string, allValues []string) bool {
 
 	for _, value := range allValues {
@@ -86,4 +84,13 @@ func isPresent(val string, allValues []string) bool {
 	}
 
 	return false
+}
+
+func index(val string, allValues []string) int {
+	for ind, value := range allValues {
+		if value == val {
+			return ind
+		}
+	}
+	return -1
 }
