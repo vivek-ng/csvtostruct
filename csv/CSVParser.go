@@ -7,31 +7,22 @@ import (
 )
 
 type CSVStruct struct {
-	data    interface{}
 	headers []string
 }
 
 func NewCSVStructer(input interface{}, headers []string) (*CSVStruct, error) {
 	c := CSVStruct{
-		data:    input,
 		headers: headers,
 	}
 	return &c, nil
 }
 
-func (c *CSVStruct) ValidateHeaders() bool {
-	if c.data == nil {
+func (c *CSVStruct) ValidateHeaders(csvHeaders []string) bool {
+	if len(c.headers) != len(csvHeaders) {
 		return false
 	}
-	s := reflect.TypeOf(c.data)
-	if len(c.headers) != s.NumField() {
-		return false
-	}
-	for i := 0; i < s.NumField(); i++ {
-		f := s.Field(i)
-		currentTag := f.Tag.Get("csv")
-		ind := isPresent(currentTag, c.headers)
-		if !ind {
+	for _, val := range csvHeaders {
+		if !isPresent(val, c.headers) {
 			return false
 		}
 	}
