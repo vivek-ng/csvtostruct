@@ -22,3 +22,13 @@ func TestParser(t *testing.T) {
 	assert.Equal(t, parser.Field1, "apple")
 	assert.Equal(t, parser.Field2, 43)
 }
+
+func TestParser_error(t *testing.T) {
+	newParser, err := csv.NewCSVStructer(&testParser1{}, []string{"field1", "field2"})
+	assert.Nil(t, err)
+	isValid := newParser.ValidateHeaders([]string{"field3", "field2"})
+	assert.Equal(t, isValid, false)
+	var parser testParser1
+	err = newParser.ScanStruct([]string{"apple", "banana"}, &parser)
+	assert.Error(t, err)
+}
