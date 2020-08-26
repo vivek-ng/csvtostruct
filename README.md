@@ -20,10 +20,11 @@ for {
     if row == 0 {
       if !csv.ValidateHeaders(record) {
         break
-        }
+      }
       row+=1
     }
     var parser testParser1
     err := csv.ScanStruct(record , &parser)
     // Now parser struct will contain the csv record
 	}
+```
