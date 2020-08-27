@@ -40,6 +40,13 @@ func (c *CSVStruct) ScanStruct(csvRow []string, inputStruct interface{}) error {
 	}
 	for i := 0; i < s.NumField(); i++ {
 		f := s.Field(i)
+		if f.Type().Kind() == reflect.Struct {
+			err := c.ScanStruct(csvRow, f.Addr().Interface())
+			if err != nil {
+				return err
+			}
+			continue
+		}
 		csvTag := reflect.TypeOf(inputStruct).Elem().Field(i).Tag.Get("csv")
 		idx := index(csvTag, c.headers)
 		if idx == -1 {
