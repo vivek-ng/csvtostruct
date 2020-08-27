@@ -1,6 +1,11 @@
 # csvtostruct
 Go Package to convert CSV fields to Struct
 
+# About
+
+csvtostruct is a minimalistic package to help you convert your CSV records to struct objects. csvtostruct also supports the 
+use of nested structs.
+
 # Usage
 
 ```
