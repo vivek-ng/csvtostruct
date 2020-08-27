@@ -41,11 +41,17 @@ func (c *CSVStruct) ScanStruct(csvRow []string, inputStruct interface{}) error {
 	for i := 0; i < s.NumField(); i++ {
 		f := s.Field(i)
 		if f.Type().Kind() == reflect.Struct {
-			err := c.ScanStruct(csvRow, f.Addr().Interface())
-			if err != nil {
-				return err
+			if f.CanAddr() {
+				if f.Addr().CanInterface() {
+					err := c.ScanStruct(csvRow, f.Addr().Interface())
+					if err != nil {
+						return err
+					}
+					continue
+				}
+				return errors.New("struct contains unexported fields")
 			}
-			continue
+			return errors.New("cannot extract address of the struct")
 		}
 		csvTag := reflect.TypeOf(inputStruct).Elem().Field(i).Tag.Get("csv")
 		idx := index(csvTag, c.headers)
