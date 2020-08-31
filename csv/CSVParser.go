@@ -73,6 +73,18 @@ func (c *CSVStruct) ScanStruct(csvRow []string, inputStruct interface{}) error {
 				return err
 			}
 			f.SetBool(ival)
+		case reflect.Float64:
+			ival, err := strconv.ParseFloat(csvRow[idx], 64)
+			if err != nil {
+				return err
+			}
+			f.SetFloat(ival)
+		case reflect.Float32:
+			ival, err := strconv.ParseFloat(csvRow[idx], 32)
+			if err != nil {
+				return err
+			}
+			f.SetFloat(ival)
 		}
 	}
 	return nil
