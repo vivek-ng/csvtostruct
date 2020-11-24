@@ -1,10 +1,9 @@
-package csv_test
+package csv
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/vivek-ng/csvtostruct/csv"
 )
 
 type TestParser1 struct {
@@ -27,7 +26,7 @@ type testParser4 struct {
 }
 
 func TestParser(t *testing.T) {
-	newParser, _ := csv.NewCSVStructer(&TestParser1{}, []string{"field1", "field2", "field3"})
+	newParser, _ := NewCSVStructer(&TestParser1{}, []string{"field1", "field2", "field3"})
 	isValid := newParser.ValidateHeaders([]string{"field1", "field2", "field3"})
 	assert.Equal(t, isValid, true)
 	var parser TestParser1
@@ -39,7 +38,7 @@ func TestParser(t *testing.T) {
 }
 
 func TestParser_Error(t *testing.T) {
-	newParser, err := csv.NewCSVStructer(&TestParser1{}, []string{"field1", "field2"})
+	newParser, err := NewCSVStructer(&TestParser1{}, []string{"field1", "field2"})
 	assert.Nil(t, err)
 	isValid := newParser.ValidateHeaders([]string{"field3", "field2"})
 	assert.Equal(t, isValid, false)
@@ -49,7 +48,7 @@ func TestParser_Error(t *testing.T) {
 }
 
 func TestParser_UnexportedFields(t *testing.T) {
-	newParser, err := csv.NewCSVStructer(&TestParser3{}, []string{"field1", "field2"})
+	newParser, err := NewCSVStructer(&TestParser3{}, []string{"field1", "field2"})
 	assert.Nil(t, err)
 	isValid := newParser.ValidateHeaders([]string{"field1", "field2"})
 	assert.Equal(t, isValid, true)
